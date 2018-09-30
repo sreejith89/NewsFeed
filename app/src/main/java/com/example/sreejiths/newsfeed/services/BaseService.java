@@ -7,15 +7,17 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
-public abstract class BaseService extends Application {
+public  abstract class BaseService extends Application {
 
     private static BaseService mInstance;
     private RequestQueue mRequestQueue;
+    private ImageLoader mImageLoader;
     public Context context;
 
     public abstract void onSuccess(JSONObject object);
@@ -43,6 +45,7 @@ public abstract class BaseService extends Application {
     }
 
     public void sendRequest(String url) {
+
         RequestQueue queue =  getRequestQueue();
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
