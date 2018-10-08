@@ -1,10 +1,10 @@
 package com.example.sreejiths.newsfeed.adapter;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,26 +14,31 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class NewsFeedAdapter extends BaseAdapter {
+public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.NewsViewHolder> {
 
-    private Context context;
-    LayoutInflater layoutInflater;
     private ArrayList<News> alNews;
 
-    public NewsFeedAdapter (Context context, ArrayList<News> alNews) {
-        this.context = context;
+    public NewsFeedAdapter (ArrayList<News> alNews) {
         this.alNews = alNews;
-        layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
-    public int getCount() {
-        return alNews.size();
+    public NewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item, parent, false);
+        NewsViewHolder newsViewHolder = new NewsViewHolder(itemView);
+        return newsViewHolder;
     }
 
     @Override
-    public Object getItem(int position) {
-        return alNews.get(position);
+    public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
+        News news = alNews.get(position);
+        holder.tvTitle.setText(news.getTitle());
+        holder.tvDescription.setText(news.getDescription());
+        if(!isImageNull(news.getImageHref())) {
+            loadImageFromUrl(news.getImageHref(), holder.ivIcon);
+        }
+        hideImageView(holder, news.getImageHref());
     }
 
     @Override
@@ -42,36 +47,37 @@ public class NewsFeedAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        if(convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.list_item, parent, false);
-            holder = new ViewHolder();
-            holder.tvTitle = convertView.findViewById(R.id.tv_title);
-            holder.tvDescription = convertView.findViewById(R.id.tv_description);
-            holder.ivIcon = convertView.findViewById(R.id.iv_icon);
-            convertView.setTag(holder);
-        }
-        else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        News newsObj = (News) getItem(position);
-        holder.tvTitle.setText(newsObj.getTitle());
-        holder.tvDescription.setText(newsObj.getDescription());
-        loadImageFromUrl(newsObj.imageHref, holder.ivIcon);
+    public int getItemCount() {
+        return alNews.size();
+    }
 
-        return convertView;
+    private boolean isImageNull(String imageUrl) {
+        if(imageUrl.equalsIgnoreCase("null")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void hideImageView(NewsViewHolder holder, String imageUrl) {
+        if(imageUrl.equalsIgnoreCase("null")) holder.ivIcon.setVisibility(View.GONE);
+        else holder.ivIcon.setVisibility(View.VISIBLE);
     }
 
     private void loadImageFromUrl(String url, ImageView imageView) {
-        Picasso.get().load(url).placeholder(R.drawable.ic_error_outline).into(imageView);
-
+        Picasso.get().load(url).into(imageView);
     }
 
-    public static class ViewHolder {
+    public class NewsViewHolder extends RecyclerView.ViewHolder{
         TextView tvTitle;
         TextView tvDescription;
         ImageView ivIcon;
+
+        public NewsViewHolder(View itemView) {
+            super(itemView);
+            tvTitle = itemView.findViewById(R.id.tv_title);
+            tvDescription = itemView.findViewById(R.id.tv_description);
+            ivIcon = itemView.findViewById(R.id.iv_icon);
+        }
     }
 }
 

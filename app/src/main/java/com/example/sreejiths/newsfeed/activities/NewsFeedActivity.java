@@ -2,9 +2,12 @@ package com.example.sreejiths.newsfeed.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.sreejiths.newsfeed.R;
 import com.example.sreejiths.newsfeed.adapter.NewsFeedAdapter;
@@ -17,14 +20,16 @@ import java.util.ArrayList;
 public class NewsFeedActivity extends BaseActivity {
 
     private ArrayList<News> alNews;
-    private ListView listView;
+    private RecyclerView recyclerView;
+    private NewsFeedAdapter newsFeedAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
-        listView = findViewById(R.id.list_view);
-        getInfoAboutCanada();
+        recyclerView = findViewById(R.id.recycler_view);
+        if(checkInternetConnection())getInfoAboutCanada();
+        else Toast.makeText(NewsFeedActivity.this, "No Network Connection", Toast.LENGTH_SHORT).show();
     }
 
     private void getInfoAboutCanada() {
@@ -32,8 +37,10 @@ public class NewsFeedActivity extends BaseActivity {
         NewsViewModel newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
         newsViewModel.getNews(NewsFeedActivity.this).observe(this,  news-> {
             if(news != null) {
-                listView.setAdapter(new NewsFeedAdapter(NewsFeedActivity.this,
-                        (ArrayList<News>) news));
+                newsFeedAdapter = new NewsFeedAdapter((ArrayList<News>) news);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(newsFeedAdapter);
             }
             hideProgressDialog();
         });
