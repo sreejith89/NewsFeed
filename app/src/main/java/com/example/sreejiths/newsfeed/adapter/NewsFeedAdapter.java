@@ -36,9 +36,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.NewsVi
         holder.tvTitle.setText(news.getTitle());
         holder.tvDescription.setText(news.getDescription());
         if(!isImageNull(news.getImageHref())) {
+            holder.ivIcon.setVisibility(View.VISIBLE);
             loadImageFromUrl(news.getImageHref(), holder.ivIcon);
-        }
-        hideImageView(holder, news.getImageHref());
+        } else holder.ivIcon.setVisibility(View.GONE);
     }
 
     @Override
@@ -56,11 +56,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.NewsVi
             return true;
         }
         return false;
-    }
-
-    private void hideImageView(NewsViewHolder holder, String imageUrl) {
-        if(imageUrl.equalsIgnoreCase("null")) holder.ivIcon.setVisibility(View.GONE);
-        else holder.ivIcon.setVisibility(View.VISIBLE);
     }
 
     private void loadImageFromUrl(String url, ImageView imageView) {
