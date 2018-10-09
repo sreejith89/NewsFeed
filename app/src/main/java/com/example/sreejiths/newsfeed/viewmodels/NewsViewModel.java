@@ -1,4 +1,4 @@
-package com.example.sreejiths.newsfeed.model;
+package com.example.sreejiths.newsfeed.viewmodels;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -7,6 +7,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
+import com.example.sreejiths.newsfeed.model.News;
 import com.example.sreejiths.newsfeed.services.BaseService;
 
 import org.json.JSONArray;
@@ -77,7 +78,10 @@ public class NewsViewModel extends ViewModel {
                 title = jsonObject.getString("title");
                 description = jsonObject.getString("description");
                 imageHref = jsonObject.getString("imageHref");
-                alNews.add(new News(title, description, imageHref));
+                if(!title.equalsIgnoreCase("null")
+                        || !description.equalsIgnoreCase("null")
+                        || !imageHref.equalsIgnoreCase("null"))
+                    alNews.add(new News(title, description, imageHref));
             }
             System.out.println("Array Count " + alNews.size());
 

@@ -17,7 +17,6 @@ public  abstract class BaseService extends Application {
 
     private static BaseService mInstance;
     private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
     public Context context;
 
     public abstract void onSuccess(JSONObject object);

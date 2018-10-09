@@ -1,4 +1,4 @@
-package com.example.sreejiths.newsfeed.adapter;
+package com.example.sreejiths.newsfeed.views;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +34,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.NewsVi
     public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
         News news = alNews.get(position);
         holder.tvTitle.setText(news.getTitle());
-        holder.tvDescription.setText(news.getDescription());
+        if(!isDescriptionNull(news.getDescription()))holder.tvDescription.setText(news.getDescription());
+        else holder.tvDescription.setText("");
         if(!isImageNull(news.getImageHref())) {
             holder.ivIcon.setVisibility(View.VISIBLE);
             loadImageFromUrl(news.getImageHref(), holder.ivIcon);
@@ -53,6 +54,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.NewsVi
 
     private boolean isImageNull(String imageUrl) {
         if(imageUrl.equalsIgnoreCase("null")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isDescriptionNull(String description) {
+        if(description.equalsIgnoreCase("null")) {
             return true;
         }
         return false;
