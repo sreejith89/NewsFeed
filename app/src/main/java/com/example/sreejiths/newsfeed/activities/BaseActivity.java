@@ -30,15 +30,4 @@ public class BaseActivity extends AppCompatActivity {
     public void hideProgressDialog() {
         dialog.dismiss();
     }
-
-    public boolean checkInternetConnection() {
-
-        ConnectivityManager cm =
-                (ConnectivityManager) BaseActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
-    }
 }

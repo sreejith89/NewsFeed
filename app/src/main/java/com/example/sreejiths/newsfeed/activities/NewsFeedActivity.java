@@ -11,13 +11,15 @@ import android.widget.Toast;
 
 import com.example.sreejiths.newsfeed.R;
 import com.example.sreejiths.newsfeed.adapter.NewsFeedAdapter;
+import com.example.sreejiths.newsfeed.connectionManager.ConnectivityReceiver;
+import com.example.sreejiths.newsfeed.connectionManager.MyApplication;
 import com.example.sreejiths.newsfeed.model.News;
 import com.example.sreejiths.newsfeed.model.NewsViewModel;
 
 import java.util.ArrayList;
 
 
-public class NewsFeedActivity extends BaseActivity {
+public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private ArrayList<News> alNews;
     private RecyclerView recyclerView;
@@ -28,8 +30,20 @@ public class NewsFeedActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
         recyclerView = findViewById(R.id.recycler_view);
-        if(checkInternetConnection())getInfoAboutCanada();
-        else Toast.makeText(NewsFeedActivity.this, "No Network Connection", Toast.LENGTH_SHORT).show();
+        if(isConnectionAvailable()){
+            Toast.makeText(NewsFeedActivity.this, "connected to internet", Toast.LENGTH_SHORT).show();
+            getInfoAboutCanada();
+        } else Toast.makeText(NewsFeedActivity.this, "not connected to internet", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApplication.getInstance().setConnectivityListener(this);
+    }
+
+    private boolean isConnectionAvailable() {
+        return  ConnectivityReceiver.isConnected();
     }
 
     private void getInfoAboutCanada() {
@@ -65,4 +79,9 @@ public class NewsFeedActivity extends BaseActivity {
         getInfoAboutCanada();
     }
 
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if(isConnected) Toast.makeText(NewsFeedActivity.this, "connected to internet", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(NewsFeedActivity.this, "not connected to internet", Toast.LENGTH_SHORT).show();
+    }
 }
