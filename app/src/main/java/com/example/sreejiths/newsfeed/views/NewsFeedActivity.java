@@ -18,7 +18,7 @@ import com.example.sreejiths.newsfeed.viewmodels.NewsViewModel;
 import java.util.ArrayList;
 
 
-public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
+public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView recyclerView;
@@ -50,7 +50,7 @@ public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiv
         MyApplication.getInstance().setConnectivityListener(this);
     }
 
-    private boolean isConnectionAvailable() {
+    public boolean isConnectionAvailable() {
         return  ConnectivityReceiver.isConnected();
     }
 
@@ -82,7 +82,6 @@ public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiv
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     private void refresh() {
         getInfoAboutCanada();
