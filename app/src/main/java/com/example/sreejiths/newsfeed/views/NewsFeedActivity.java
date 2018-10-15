@@ -1,6 +1,8 @@
 package com.example.sreejiths.newsfeed.views;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +25,7 @@ public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiv
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView recyclerView;
     private NewsFeedAdapter newsFeedAdapter;
+    private ConnectivityReceiver connectivityReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiv
         setContentView(R.layout.activity_news_feed);
         recyclerView = findViewById(R.id.recycler_view);
         swipeContainer = findViewById(R.id.swipe_container);
+        connectivityReceiver = new ConnectivityReceiver();
         if(isConnectionAvailable()){
             Toast.makeText(NewsFeedActivity.this, "connected to internet", Toast.LENGTH_SHORT).show();
             getInfoAboutCanada();
@@ -47,9 +51,23 @@ public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiv
     };
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(connectivityReceiver, intentFilter);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         MyApplication.getInstance().setConnectivityListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(connectivityReceiver);
     }
 
     public boolean isConnectionAvailable() {
