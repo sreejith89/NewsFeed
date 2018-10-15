@@ -35,14 +35,16 @@ public class NewsFeedActivity extends BaseActivity implements ConnectivityReceiv
             getInfoAboutCanada();
         } else Toast.makeText(NewsFeedActivity.this, "not connected to internet", Toast.LENGTH_SHORT).show();
 
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getInfoAboutCanada();
-            }
-        });
+        swipeContainer.setOnRefreshListener(refreshListener);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
     }
+
+    private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            getInfoAboutCanada();
+        }
+    };
 
     @Override
     protected void onResume() {
